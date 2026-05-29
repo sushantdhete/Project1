@@ -1,1 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney+ Hotstar - Stream Latest TV Shows, Movies & Live Sports</title>
+    <style>
+        /* --- Hotstar Design Token Variables --- */
+        :root {
+            --bg-dark-blue: #0f1016;
+            --sidebar-bg: rgba(15, 16, 22, 0.95);
+            --text-primary: #f9f9f9;
+            --text-secondary: #8f98b2;
+            --accent-blue: #0063e5;
+            --accent-hover: #0483ee;
+            --sidebar-width: 96px;
+            --sidebar-expanded: 240px;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark-blue);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            padding-left: var(--sidebar-width);
+            transition: padding 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* --- Left Sidebar Navigation (Hotstar Signature) --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(to right, #090a0e, transparent);
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 30px 24px;
+            z-index: 1000;
+            transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar:hover {
+            width: var(--sidebar-expanded);
+            box-shadow: 20px 0 40px rgba(0,0,0,0.7);
+        }
+
+        .logo-space {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 60px;
+            width: 100%;
+        }
+
+        .logo-main {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            background: linear-gradient(90deg, #ffcc00, #ff7300);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar:hover .logo-sub {
+            opacity: 1;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            width: 100%;
+            list-style: none;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 600;
+            transition: color 0.2s, transform 0.2s;
+            gap: 24px;
+        }
+
+        .nav-item:hover a {
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* --- Top Header Action Space --- */
+        .top-header {
+            width: calc(100% - var(--sidebar-width));
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 4%;
+            position: absolute;
+            top: 0;
+            z-index: 90;
+        }
+
+        .search-container {
+            position: relative;
+            margin-right: 24px;
+        }
+
+        .search-container input {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 10px 16px 10px 40px;
+            color: #fff;
+            outline: none;
+            width: 240px;
+            transition: all 0.3s;
+        }
+
+        .search-container input:focus {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .subscribe-btn {
+            background: linear-gradient(90deg, var(--accent-blue), #00d2ff);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 99, 229, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .subscribe-btn:hover {
+            transform: scale(1.03);
+        }
+
+        /* --- Immersive Main Banner Showcase --- */
+        .showcase-wrapper {
+            padding: 30px 4% 0 2%;
+            margin-top: 20px;
+        }
+
+        .showcase-view {
+            width: 100%;
+            height: 480px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .showcase-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        .showcase-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #0f1016 35%, rgba(15, 16, 22, 0.7) 50%, transparent 80%),
+                        linear-gradient(to top, #0f1016 10%, transparent 40%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 60px;
+        }
+
+        .meta-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            width: fit-content;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .showcase-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            max-width: 500px;
+            line-height: 1.1;
+        }
+
+        .showcase-description {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 480px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-play {
+            background: #ffffff;
+            color: #000;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-play:hover {
+            background: rgba(255,255,255,0.85);
+        }
+
+        /* --- Content Slider Shelves --- */
+        .shelf {
+            padding: 32px 4% 10px 2%;
+        }
+
+        .shelf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .shelf-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .shelf-slider {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 8px 0;
+        }
+
+        .shelf-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Portrait Poster Layout */
+        .poster-card {
+            min-width: 190px;
+            height: 280px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .poster-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poster-card:hover {
+            transform: scale(1.06);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+        }
+
+        .poster-meta {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 12px 12px;
+            background: linear-gradient(to top, rgba(15,16,22,0.95), transparent);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .poster-card:hover .poster-meta {
+            opacity: 1;
+        }
+
+        .poster-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hotstar Multi-Stage Vertical Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-space">
+            <span class="logo-main">Disney+</span>
+            <span class="logo-sub">hotstar</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#"><span class="nav-icon">👤</span> <span>My Space</span></a></li>
+            <li class="nav-item"><a href="#"><span class="nav-icon">🔍</span> <span>Search</span></a></li>
+            <li class="nav-item"><a href="#"><span class="nav-icon">🏠</span> <span>Home</span></a></li>
+            <li class="nav-item"><a href="#"><span class="nav-icon">📺</span> <span>TV Shows</span></a></li>
+            <li class="nav-item"><a href="#"><span class="nav-icon">🎬</span> <span>Movies</span></a></li>
+            <li class="nav-item"><a href="#"><span class="nav-icon">🏆</span> <span>Sports</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Top Navigation Actions -->
+    <header class="top-header">
+        <div class="search-container">
+            <input type="text" placeholder="Movies, shows and more">
+        </div>
+        <button class="subscribe-btn">Subscribe</button>
+    </header>
+
+    <!-- Immersive Hero Section -->
+    <section class="showcase-wrapper">
+        <div class="showcase-view">
+            <img class="showcase-img" id="hero-display-bg" src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=1400" alt="Showcase background">
+            <div class="showcase-overlay">
+                <span class="meta-badge" id="hero-display-badge">PREMIUM</span>
+                <h1 class="showcase-title" id="hero-display-title">Epic Universe Expansion</h1>
+                <p class="showcase-description" id="hero-display-desc">Dive into worlds unseen. Explore the premium slate of action, thriller, and regional cinematic blockbusters streaming now on Hotstar.</p>
+                <div class="action-row">
+                    <button class="btn-play">▶ Watch Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dynamic Shelves Insertion Container -->
+    <main id="shelves-content-root"></main>
+
+    <script>
+        // Data Store Modeling authentic layout catalogs
+        const showcaseHighlights = [
+            { title: "Shōgun", badge: "HULU ORIGINALS", desc: "In Japan in the year 1600, Lord Yoshii Toranaga is fighting for his life as his enemies on the Council of Regents unite against him.", img: "https://images.unsplash.com/photo-1543157145-f78c636d023d?w=1400" },
+            { title: "Marvel Studios' Echo", badge: "MARVEL", desc: "Maya Lopez must face her past, reconnect with her Native American roots and embrace the meaning of family and community.", img: "https://images.unsplash.com/photo-1635863138275-d9b33299680b?w=1400" }
+        ];
+
+        const hotstarCatalogData = [
+            {
+                rowTitle: "Latest & Trending",
+                cards: [
+                    { name: "The Bear", url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=400" },
+                    { name: "Guardians of Vol. 3", url: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=400" },
+                    { name: "Avatar: Way of Water", url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+                    { name: "AShop For Killers", url: "https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=400" },
+                    { name: "Loki Season 2", url: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+                    { name: "Ahsoka", url: "https://images.unsplash.com/photo-1563089145-599997674d42?w=400" }
+                ]
+            },
+            {
+                rowTitle: "Popular Movies",
+                cards: [
+                    { name: "Free Guy", url: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=400" },
+                    { name: "Encanto", url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" },
+                    { name: "Cruella", url: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400" },
+                    { name: "Toy Story 4", url: "https://images.unsplash.com/photo-1608889175123-8ee362201f81?w=400" },
+                    { name: "Doctor Strange", url: "https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=400" },
+                    { name: "Black Panther", url: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400" }
+                ]
+            }
+        ];
+
+        // Auto-rotation engine for immersive banner
+        let bannerPointer = 0;
+        function slideHeroBanner() {
+            bannerPointer = (bannerPointer + 1) % showcaseHighlights.length;
+            const targetData = showcaseHighlights[bannerPointer];
+            document.getElementById('hero-display-title').innerText = targetData.title;
+            document.getElementById('hero-display-badge').innerText = targetData.badge;
+            document.getElementById('hero-display-desc').innerText = targetData.desc;
+            document.getElementById('hero-display-bg').src = targetData.img;
+        }
+        setInterval(slideHeroBanner, 7000);
+
+        // Map catalog rows to DOM using performant HTML fragments
+        const rootSection = document.getElementById('shelves-content-root');
+        hotstarCatalogData.forEach(shelfItem => {
+            let shelfContainer = document.createElement('section');
+            shelfContainer.className = 'shelf';
+            
+            let elementsMarkup = `
+                <div class="shelf-header">
+                    <h2 class="shelf-title">${shelfItem.rowTitle}</h2>
+                </div>
+                <div class="shelf-slider">
+            `;
+
+            shelfItem.cards.forEach(card => {
+                elementsMarkup += `
+                    <div class="poster-card">
+                        <img src="${card.url}" alt="${card.name}" loading="lazy">
+                        <div class="poster-meta">
+                            <p class="poster-name">${card.name}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            elementsMarkup += `</div>`;
+            shelfContainer.innerHTML = elementsMarkup;
+            rootSection.appendChild(shelfContainer);
+        });
+    </script>
+</body>
+</html>
